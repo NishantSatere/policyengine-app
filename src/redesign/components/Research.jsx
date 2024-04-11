@@ -235,12 +235,11 @@ function BlogPostSearchTools({
     authorKeys.map((key) => [key, authors[key].name]),
   );
 
-
   const [openList, setOpenList] = useState(null);
 
   // Handler to open a list and close others
   const handleOpenList = (listName) => {
-    setOpenList(openList => openList === listName ? null : listName);
+    setOpenList((openList) => (openList === listName ? null : listName));
   };
 
   const textBox = (
@@ -315,7 +314,7 @@ function BlogPostSearchTools({
         }}
       >
         {textBox}
-        <div style={{ marginBottom: 20}} />
+        <div style={{ marginBottom: 20 }} />
         {searchButton}
         {filterTools}
       </div>
@@ -361,8 +360,8 @@ function ExpandableCheckBoxList({
   onToggle,
 }) {
   return (
-    <Expandable title={title} isOpen={isOpen}  onToggle={onToggle}>
-      <div style={{ maxHeight: '210px', overflowY: 'auto' }}>
+    <Expandable title={title} isOpen={isOpen} onToggle={onToggle}>
+      <div style={{ maxHeight: "210px", overflowY: "auto" }}>
         {keys.map((key) => (
           <Checkbox
             key={key}
@@ -397,7 +396,7 @@ function ExpandableCheckBoxList({
   );
 }
 
-function Expandable({ title, children ,isOpen, onToggle}) {
+function Expandable({ title, children, isOpen, onToggle }) {
   // const [expanded, setExpanded] = useState(false);
   const contentRef = useRef();
   const titleRef = useRef();
