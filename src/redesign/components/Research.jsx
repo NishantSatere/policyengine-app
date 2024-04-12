@@ -235,13 +235,6 @@ function BlogPostSearchTools({
     authorKeys.map((key) => [key, authors[key].name]),
   );
 
-  const [openList, setOpenList] = useState(null);
-
-  // Handler to open a list and close others
-  const handleOpenList = (listName) => {
-    setOpenList((openList) => (openList === listName ? null : listName));
-  };
-
   const textBox = (
     <TextBox
       placeholder="Search by keyword, author, etc."
@@ -263,7 +256,7 @@ function BlogPostSearchTools({
     />
   );
   const filterTools = (
-    <>
+    <div style={{ maxHeight: "50vh", overflowY: "auto" }}>
       <p
         className="spaced-sans-serif"
         style={{
@@ -279,8 +272,6 @@ function BlogPostSearchTools({
         keyToLabel={topicLabels}
         checkedValues={filteredTopics}
         setCheckedValues={setFilteredTopics}
-        isOpen={openList === "topic"}
-        onToggle={() => handleOpenList("topic")}
       />
       <ExpandableCheckBoxList
         title="Location"
@@ -288,8 +279,6 @@ function BlogPostSearchTools({
         keyToLabel={locationLabels}
         checkedValues={filteredLocations}
         setCheckedValues={setFilteredLocations}
-        isOpen={openList === "location"}
-        onToggle={() => handleOpenList("location")}
       />
       <ExpandableCheckBoxList
         title="Author"
@@ -297,10 +286,8 @@ function BlogPostSearchTools({
         keyToLabel={authorKeyToLabel}
         checkedValues={filteredAuthors}
         setCheckedValues={setFilteredAuthors}
-        isOpen={openList === "author"}
-        onToggle={() => handleOpenList("author")}
       />
-    </>
+    </div>
   );
   const displayCategory = useDisplayCategory();
   if (displayCategory === "desktop") {
@@ -311,6 +298,7 @@ function BlogPostSearchTools({
           top: 150,
           display: "flex",
           flexDirection: "column",
+          paddingTop: 20,
         }}
       >
         {textBox}
@@ -356,12 +344,10 @@ function ExpandableCheckBoxList({
   keyToLabel,
   checkedValues,
   setCheckedValues,
-  isOpen,
-  onToggle,
 }) {
   return (
-    <Expandable title={title} isOpen={isOpen} onToggle={onToggle}>
-      <div style={{ maxHeight: "210px", overflowY: "auto" }}>
+    <Expandable title={title}>
+      <div style={{ overflowY: "auto" }}>
         {keys.map((key) => (
           <Checkbox
             key={key}
@@ -396,15 +382,15 @@ function ExpandableCheckBoxList({
   );
 }
 
-function Expandable({ title, children, isOpen, onToggle }) {
-  // const [expanded, setExpanded] = useState(false);
+function Expandable({ title, children }) {
+  const [expanded, setExpanded] = useState(false);
   const contentRef = useRef();
   const titleRef = useRef();
   const titleComponent = (
     <div
       style={{ display: "flex", alignItems: "center" }}
       ref={titleRef}
-      onClick={onToggle}
+      onClick={() => setExpanded(!expanded)}
     >
       <p style={{ margin: 0 }}>{title}</p>
       <FontIcon
@@ -412,7 +398,7 @@ function Expandable({ title, children, isOpen, onToggle }) {
         size={20}
         style={{
           marginLeft: "auto",
-          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+          transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
           transition: "transform 0.3s ease-in-out",
         }}
       />
@@ -429,7 +415,7 @@ function Expandable({ title, children, isOpen, onToggle }) {
         maxHeight: 30,
       }}
       animate={{
-        maxHeight: isOpen
+        maxHeight: expanded
           ? contentRef.current?.getBoundingClientRect().height +
             titleRef.current?.getBoundingClientRect().height
           : titleRef.current?.getBoundingClientRect().height,
